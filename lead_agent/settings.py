@@ -23,7 +23,7 @@ class Settings(BaseSettings):
 
     openrouter_api_key: str = Field(..., description="OpenRouter API key.")
     openrouter_base_url: str = "https://openrouter.ai/api/v1"
-    llm_model: str = "anthropic/claude-3.5-sonnet"
+    llm_model: str = "anthropic/claude-sonnet-4.5"
 
     embedding_model: str = "all-MiniLM-L6-v2"
     cross_encoder_model: str = "cross-encoder/ms-marco-MiniLM-L-6-v2"
@@ -32,12 +32,11 @@ class Settings(BaseSettings):
     chroma_path: Path = Path(".chroma")
     collection_name: str = "leads"
 
-    top_k: int = 5
-    overfetch: int = 20
-    rerank_threshold: float = 0.0
+    top_k: int = 50
+    overfetch: int = 100
+    rerank_threshold: float = -2
 
     summarize_every_n_turns: int = 6
-    memory_path: Path = Path("memory/session.json")
 
 
 class ConfigError(RuntimeError):

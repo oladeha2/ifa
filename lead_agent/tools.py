@@ -1,3 +1,4 @@
+import logging
 from typing import Optional
 
 from langchain_core.tools import tool
@@ -7,6 +8,8 @@ from lead_agent.retrieval import retrieve
 from lead_agent.semantic import SemanticEngine
 from lead_agent.settings import Settings
 from lead_agent.vectorstore import LeadVectorStore, VectorStoreError
+
+logger = logging.getLogger(__name__)
 
 
 def _build_where(
@@ -56,6 +59,7 @@ def make_search_leads_tool(
         Set high_priority=true when the user asks for priority/important leads.
         """
         where = _build_where(industry, lead_source, min_company_size, high_priority)
+        logger.info("search_leads: query=%r filters=%s", query, where or {})
 
         try:
             results = retrieve(query, where, store, engine, settings)
