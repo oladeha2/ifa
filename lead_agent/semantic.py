@@ -35,8 +35,10 @@ class SemanticEngine:
         """Re-score candidates with the cross-encoder and sort best-first."""
         if not candidates:
             return []
+
         pairs = [(query, c.lead.to_embedding_text()) for c in candidates]
         scores = self._reranker.predict(pairs)
+        
         reranked = [
             ScoredLead(lead=c.lead, score=float(s))
             for c, s in zip(candidates, scores)
