@@ -1,19 +1,25 @@
-"""Command-line REPL for the Lead Intelligence Agent.
-
-Phase 0: a placeholder loop that echoes input and exits cleanly. Later phases
-wire in settings, ingestion, and the agent, and add the top-level error
-boundary and formatted `{summary, leads}` output.
-"""
-
-from __future__ import annotations
+from lead_agent.data import LeadDataError, load_leads
+from lead_agent.settings import ConfigError, load_settings
 
 BANNER = (
-    "Lead Intelligence Agent (scaffold)\n"
+    "Lead Intelligence Agent\n"
     "Type a question, or 'exit' / Ctrl-C to quit.\n"
 )
 
 
+def startup() -> None:
+    """Load settings and lead data. Raises ConfigError / LeadDataError."""
+    settings = load_settings()
+    leads = load_leads(settings.leads_path)
+    print(f"Loaded {len(leads)} leads from {settings.leads_path}.\n")
+
+
 def run() -> None:
+    try:
+        startup()
+    except (ConfigError, LeadDataError) as exc:
+        raise SystemExit(f"Startup failed: {exc}")
+
     print(BANNER)
     while True:
         try:

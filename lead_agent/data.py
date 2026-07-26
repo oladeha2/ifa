@@ -1,9 +1,8 @@
 import json
-
-
-from __future__ import annotations
 from pathlib import Path
+
 from pydantic import ValidationError
+
 from lead_agent.models import Lead
 
 
