@@ -1,4 +1,5 @@
 from lead_agent.data import LeadDataError, load_leads
+from lead_agent.retrieval import retrieve
 from lead_agent.semantic import SemanticEngine, SemanticEngineError
 from lead_agent.settings import ConfigError, Settings, load_settings
 from lead_agent.vectorstore import LeadVectorStore, VectorStoreError
@@ -9,7 +10,7 @@ BANNER = (
 )
 
 
-def startup() -> tuple[LeadVectorStore, Settings]:
+def startup() -> tuple[LeadVectorStore, SemanticEngine, Settings]:
     """Load settings and data, then build and populate the vector store."""
     settings = load_settings()
     leads = load_leads(settings.leads_path)
@@ -17,12 +18,12 @@ def startup() -> tuple[LeadVectorStore, Settings]:
     store = LeadVectorStore(settings, engine)
     store.upsert(leads)
     print(f"Indexed {store.count()} leads from {settings.leads_path}.\n")
-    return store, settings
+    return store, engine, settings
 
 
 def run() -> None:
     try:
-        store, settings = startup()
+        store, engine, settings = startup()
     except (ConfigError, LeadDataError, SemanticEngineError, VectorStoreError) as exc:
         raise SystemExit(f"Startup failed: {exc}")
 
@@ -40,10 +41,10 @@ def run() -> None:
             print("Goodbye.")
             break
 
-        # Interim plain vector search (no rerank/threshold yet - Phase 5).
+        # Interim retrieval (rerank + threshold, no filters yet - Phase 6).
         # Replaced by the agent in Phase 7.
         try:
-            results = store.query(question, filters={}, limit=settings.overfetch)
+            results = retrieve(question, {}, store, engine, settings)
         except VectorStoreError as exc:
             print(f"Search error: {exc}\n")
             continue
