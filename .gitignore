@@ -1,0 +1,14 @@
+# Environment / secrets
+.env
+
+# Local data stores
+.chroma/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/

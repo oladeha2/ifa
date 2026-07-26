@@ -1,14 +1,22 @@
 import logging
 
-from lead_agent.agent import AgentError, LeadAgent
+from lead_agent.agent import LeadAgent
 from lead_agent.data import LeadDataError, load_leads
+from lead_agent.models import Lead
 from lead_agent.semantic import SemanticEngine, SemanticEngineError
 from lead_agent.settings import ConfigError, load_settings
 from lead_agent.vectorstore import LeadVectorStore, VectorStoreError
 
+logger = logging.getLogger(__name__)
+
 BANNER = (
     "Lead Intelligence Agent\n"
-    "Type a question, or 'exit' / Ctrl-C to quit.\n"
+    "Type a question, 'reset' to start over, or 'exit' / Ctrl-C to quit.\n"
+)
+
+_GENERIC_ERROR = (
+    "Your request could not be responded to due to an error, "
+    "please try again later.\n"
 )
 
 
@@ -19,6 +27,19 @@ def _configure_logging() -> None:
     )
     logging.getLogger("lead_agent").setLevel(logging.INFO)
 
+
+def _format_lead(index: int, lead: Lead) -> str:
+    priority = "  [HIGH PRIORITY]" if lead.high_priority else ""
+    lines = [
+        f"[{index}] {lead.full_name} - {lead.job_title} @ {lead.company}{priority}",
+        f"    {lead.industry} | {lead.company_size} employees | {lead.location}",
+    ]
+    if lead.notes:
+        note = lead.notes if len(lead.notes) <= 160 else lead.notes[:157] + "..."
+        lines.append(f"    Notes: {note}")
+    if lead.tags:
+        lines.append(f"    Tags: {', '.join(lead.tags)}")
+    return "\n".join(lines)
 
 def startup() -> LeadAgent:
     """Load settings and data, build the vector store, and wire up the agent."""
@@ -51,20 +72,21 @@ def run() -> None:
         if question.lower() in {"exit", "quit"}:
             print("Goodbye.")
             break
+        if question.lower() in {"reset", "new"}:
+            agent.reset()
+            print("Started a new conversation.\n")
+            continue
 
         try:
             response = agent.query(question)
-        except AgentError:
-            print(
-                "Your request could not be responded to due to an error, "
-                "please try again later.\n"
-            )
+        except Exception:
+            logger.exception("Failed to handle question: %r", question)
+            print(_GENERIC_ERROR)
             continue
 
         print(f"\n{response.summary}\n")
-        for lead in response.leads:
-            print(
-                f"  - {lead.full_name} - {lead.job_title} @ {lead.company} "
-                f"({lead.industry}, {lead.company_size} employees, {lead.location}) Notes: {lead.notes}"
-            )
-        print()
+        if response.leads:
+            print(f"Leads ({len(response.leads)}):")
+            for i, lead in enumerate(response.leads, 1):
+                print(_format_lead(i, lead))
+            print()
