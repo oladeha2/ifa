@@ -59,7 +59,6 @@ def make_search_leads_tool(
         Set high_priority=true when the user asks for priority/important leads.
         """
         where = _build_where(industry, lead_source, min_company_size, high_priority)
-        logger.info("search_leads: query=%r filters=%s", query, where or {})
 
         try:
             results = retrieve(query, where, store, engine, settings)
