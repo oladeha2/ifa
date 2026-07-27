@@ -35,7 +35,7 @@ def _build_where(
     if len(conditions) == 1:
         return conditions[0]
 
-    return {"$and": conditions}  # Chroma requires $and for multiple conditions
+    return {"$and": conditions}
 
 
 def make_search_leads_tool(
