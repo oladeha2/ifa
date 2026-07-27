@@ -131,10 +131,6 @@ class Lead(BaseModel):
         data["tags"] = data["tags"].split(_LIST_SEP) if data.get("tags") else []
         return cls.model_validate(data)
 
-    def to_stub(self) -> dict[str, str | int]:
-        """Compact reference for conversation memory (avoids context bloat)."""
-        return {"id": self.id, "name": self.full_name, "company": self.company}
-
 
 class ScoredLead(BaseModel):
     """A lead paired with a retrieval/rerank relevance score."""

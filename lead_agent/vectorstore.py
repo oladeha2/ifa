@@ -56,7 +56,7 @@ class LeadVectorStore:
                 where=filters or None,
                 include=["metadatas", "distances"],
             )
-            
+
         except Exception as exc:
             raise VectorStoreError(f"Query failed: {exc}") from exc
 
@@ -67,8 +67,3 @@ class LeadVectorStore:
             ScoredLead(lead=Lead.from_metadata(meta), score=1.0 - dist)
             for meta, dist in zip(metadatas, distances)
         ]
-
-    def get_by_id(self, lead_id: int) -> Lead | None:
-        result = self._collection.get(ids=[str(lead_id)], include=["metadatas"])
-        metadatas = result["metadatas"]
-        return Lead.from_metadata(metadatas[0]) if metadatas else None

@@ -56,6 +56,6 @@ def load_settings() -> Settings:
     except Exception as exc:  # pydantic ValidationError and friends
         raise ConfigError(
             "Failed to load configuration. Ensure a `.env` file exists with a "
-            "valid `OPENROUTER_API_KEY` (see `.env.example`).\n"
+            "valid `OPENROUTER_API_KEY`\n"
             f"Underlying error: {exc}"
         ) from exc
