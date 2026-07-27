@@ -64,13 +64,13 @@ Speed, the system is slower than a traditional RPA system, it requires more time
 
 # Agent Evaluation and Improvement. 
 
-## Orchestration - when I would add a second agent
+## Orchestration
 
 Initially when I was designing the system one of the main aspects of my focus and a big factor of the systems success was the relevancy of the results returned to the user as part of the leads search tool. My feeling was essentially the success of this system in a real user scenario is in building confidence that when a user asks a question they see highly relevant and accurate results. I ended up going with a cheaper numerical solution using the cross encoder model to re-rank the results based on the query and the leads. However, based on my research on solutions like this there is an extra layer of improvement that can be added to this, this can take the form of an extra agent. The extra agent would be responsible specifically for taking the initial user query and the final set of reranked results and evaluating through natural language understanding and advanced reasoning whether the leads are adequately relevant to the users question and would serve as a good basis for the answer generation. Using an LLM/Agent here provides a more thorough and detailed means of determining relevancy compared to semantic based matching via cosine similarity and a cross encoder model.
 
 I would add this second agent when the numerical threshold on its own is not reliable enough, for example when irrelevant leads start slipping past the cross encoder or as the queries become more complex. The real benefit is that it does not just grade the results, it can close the loop and take a corrective action. If it decides the leads are not good enough it could rewrite the query and search again, loosen the metadata filters, ask the user a clarifying question, or simply be honest and say there are no confident matches rather than generating an answer off weak results. The tradeoff is that it adds another LLM call and therefore more latency and cost, so it makes the most sense when precision and user trust matter more than raw speed.
 
-## Metrics I would track
+## Metrics
 
 In terms of measuring whether the system is actually successful, the two metrics I would focus on are retrieval precision and hallucination rate.
 
