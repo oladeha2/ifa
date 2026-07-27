@@ -48,8 +48,9 @@ The ability to search for leads is a prominent part of the system and is enabled
 
 The diagram bellow shows the data flow and the main components of the system:
 
-Data Flow and Components
+![Data Flow and Components](./diagram.png)
 
+# Benefits of Agentic Workflow Design
 A traditional RPA workflow can only filter on the explicit, structured columns in the leads schema (industry, company size, etc.) using predefined rules, and someone has to author a rule for every scenario in advance. This agent-based, retrieval-augmented approach is more powerful and flexible for several reasons:
 
 This system searches on meaning, a lot of the value that is derived from a lead database is actually in the free text fields of the leads, for example notes, tags and not just the structured fields. Simple RPA systems would have to do key word matching on the free text fields to find leads that match the query. This system can use semantic search to find leads that match the query based on the meaning of the query and the free text fields of the leads. 
