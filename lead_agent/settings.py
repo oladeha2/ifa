@@ -32,8 +32,10 @@ class Settings(BaseSettings):
     chroma_path: Path = Path(".chroma")
     collection_name: str = "leads"
 
-    top_k: int = 50
-    overfetch: int = 100
+    top_k: int = 10
+    overfetch: int = 50
+
+    # set like this based on experiments with the cross-encoder model
     rerank_threshold: float = -2
 
     summarize_every_n_turns: int = 6

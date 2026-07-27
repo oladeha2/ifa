@@ -40,7 +40,7 @@ def retrieve(
             c.score,
         )
 
-    kept = [c for c in reranked if round(c.score) >= settings.rerank_threshold]
+    kept = [c for c in reranked if c.score >= settings.rerank_threshold]
     result = kept[: settings.top_k]
     logger.info(
         "retrieve: %d leads after rerank + threshold (kept %d of %d, top_k=%d)",
